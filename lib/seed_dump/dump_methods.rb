@@ -112,7 +112,7 @@ class SeedDump
   end
 end
 """
-      update_code = update_code.gsub(/[model_name]/, model_name).gsub(/[var_name]/, var_name)
+      update_code = update_code.gsub("[model_name]", model_name).gsub("[var_name]", var_name)
 
       io.write(update_code)
 
