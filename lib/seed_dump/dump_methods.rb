@@ -70,8 +70,7 @@ class SeedDump
     def write_records_to_io(records, io, options)
       options[:exclude] ||= [:id, :created_at, :updated_at]
 
-      method = options[:import] ? 'import' : 'create!'
-      io.write("#{model_for(records)}.#{method}(")
+      io.write("#{table_name(records)} = ")
       if options[:import]
         io.write("[#{attribute_names(records, options).map {|name| name.to_sym.inspect}.join(', ')}], ")
       end
@@ -89,7 +88,7 @@ class SeedDump
         io.write(",\n  ") unless last_batch
       end
 
-      io.write("\n])\n")
+      io.write("\n]\n")
 
       if options[:file].present?
         nil
