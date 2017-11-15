@@ -1,3 +1,5 @@
+goal: change output format
+
 Seed Dump
 ========
 
