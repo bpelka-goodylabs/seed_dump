@@ -78,7 +78,8 @@ class SeedDump
     def write_records_to_io(records, io, options)
       options[:exclude] ||= [:id, :created_at, :updated_at]
 
-      var_name = underscore("#{model_for(records)}");
+      model_name = "#{model_for(records)}";
+      var_name = underscore(model_name);
 
       io.write(var_name + " = ")
       if options[:import]
@@ -99,6 +100,21 @@ class SeedDump
       end
 
       io.write("\n]\n")
+
+      update_code = """
+[var_name].each do |f|
+  item = [model_name].find_by_key(f[:key])
+  unless item.nil?
+    item.update_attributes(f)
+    item.save
+  else
+    [model_name].create!(f)
+  end
+end
+"""
+      update_code = update_code.sub("[model_name]", model_name).sub("[var_name]", var_name)
+
+      io.write(update_code)
 
       if options[:file].present?
         nil
