@@ -15,6 +15,14 @@ class SeedDump
 
     private
 
+    def underscore(camel_cased_word)
+     camel_cased_word.to_s.gsub(/::/, '/').
+       gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
+       gsub(/([a-z\d])([A-Z])/,'\1_\2').
+       tr("-", "_").
+       downcase
+    end
+
     def dump_record(record, options)
       attribute_strings = []
 
@@ -70,7 +78,9 @@ class SeedDump
     def write_records_to_io(records, io, options)
       options[:exclude] ||= [:id, :created_at, :updated_at]
 
-      io.write("#{table_name(records)} = ")
+      var_name = underscore("#{model_for(records)}");
+
+      io.write(var_name + " = ")
       if options[:import]
         io.write("[#{attribute_names(records, options).map {|name| name.to_sym.inspect}.join(', ')}], ")
       end
